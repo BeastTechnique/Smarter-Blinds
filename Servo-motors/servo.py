@@ -9,7 +9,6 @@ try:
 		GPIO.output(7,1)
 		time.sleep(0.0015)
 		GPIO.output(7,0)
-
 		time.sleep(2)
 
 except KeyboardInterrupt:
