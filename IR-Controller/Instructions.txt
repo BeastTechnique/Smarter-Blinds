@@ -1,0 +1,65 @@
+			TROUBLESHOOTING
+
+#*****************************************************************
+#installment process (I used pin 18 for signal,5V)
+
+$ sudo apt-get update
+$ sudo apt-get install lirc
+
+# Add the following lines to /etc/modules file
+lirc_dev
+lirc_rpi gpio_in_pin=18
+
+# Add the following lines to /etc/lirc/hardware.conf file
+LIRCD_ARGS="--uinput"
+LOAD_MODULES=true
+DRIVER="default"
+DEVICE="/dev/lirc0"
+MODULES="lirc_rpi"
+
+# Update the following line in /boot/config.txt
+dtoverlay=lirc-rpi,gpio_in_pin=18
+
+# Update the following lines in /etc/lirc/lirc_options.conf
+driver    = default
+device    = /dev/lirc0
+
+$ sudo /etc/init.d/lircd stop
+$ sudo /etc/init.d/lircd start
+
+# Check status to make lirc is running
+$ sudo /etc/init.d/lircd status
+
+# Reboot before testing
+$ reboot
+
+# To test if lirc driver is working
+$ sudo /etc/init.d/lircd stop
+$ mode2 -d /dev/lirc0
+<press a key in remote and you should see multple lines like below>
+pulse 560
+space 1706
+pulse 535
+
+# to record a custom remote/register a remote device
+$ sudo /etc/init.d/lircd stop
+$ sudo irrecord -d /dev/lirc0 ~/lircd.conf
+# follow the instruction prompted by the above command carefully
+# use (irrecord --list-namespace) to see available names
+# at the end ~/<device name>.lircd.conf file will be generated
+
+# backup the original lircd.conf
+$ sudo mv /etc/lirc/lircd.conf /etc/lirc/lircd_original.conf
+#this step is crucial or else it won't read the proper file.
+$ sudo cp ~/<device name>.lircd.conf /etc/lirc/lircd.conf
+#********************************************************************
+# To check controller is communicating with the pi do the following:
+#Restart lirc deamon
+$: systemctl restart lircd.service 
+#Check if loaded without errors (should show device name)
+$: sudo systemctl status lircd.socket lircd.service
+#If all good check now if its receiving signal
+$: sudo /etc/init.d/lircd restart
+$: irw
+...
+...

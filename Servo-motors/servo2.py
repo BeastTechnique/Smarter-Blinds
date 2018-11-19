@@ -18,7 +18,7 @@ try:
 			time.sleep(0.02)
 		for i in range(100):
 			p.ChangeDutyCycle(100-i)
-			time,sleep(0.02)
+			time.sleep(0.02)
 
 		p.ChangeDutyCycle(0)
 
@@ -26,12 +26,11 @@ try:
 			q.ChangeDUtyCycle(i)
 			time.sleep(0.02)
 		for i in range(100):
-			q.ChangeDutyCYcle(100-i)
+			q.ChangeDutyCycle(100-i)
 			time.sleep(0.02)
 
 		q.ChangeDutyCycle(0)
 except KeyboardInterrupt:
-	pass
 	p.stop()
 	q.stop()
 	GPIO.cleanup()
